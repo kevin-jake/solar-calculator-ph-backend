@@ -6,6 +6,7 @@ const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
 
 const inverterRoutes = require("./routes/inverter-routes");
+const batteryRoutes = require("./routes/battery-routes");
 const usersRoutes = require("./routes/users-routes");
 const HttpError = require("./models/http-error");
 
@@ -27,6 +28,7 @@ app.use((req, res, next) => {
 });
 
 app.use("/api/inverter", inverterRoutes);
+app.use("/api/battery", batteryRoutes);
 app.use("/api/users", usersRoutes);
 
 app.use((req, res, next) => {
