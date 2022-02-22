@@ -1,7 +1,7 @@
-const fs = require("fs");
+// const fs = require("fs");
 
 const { validationResult } = require("express-validator");
-const mongoose = require("mongoose");
+// const mongoose = require("mongoose");
 
 const HttpError = require("../models/http-error");
 const Inverter = require("../models/Inverter");
@@ -36,7 +36,7 @@ const getInverterById = async (req, res, next) => {
     return next(error);
   }
 
-  if (!Inverter) {
+  if (!inverter) {
     const error = new HttpError(
       "Could not find Inverter for the provided id.",
       404
@@ -44,7 +44,7 @@ const getInverterById = async (req, res, next) => {
     return next(error);
   }
 
-  res.json({ Inverter: Inverter.toObject({ getters: true }) });
+  res.json({ Inverter: inverter.toObject({ getters: true }) });
 };
 
 const createInverter = async (req, res, next) => {
@@ -122,12 +122,21 @@ const updateInverter = async (req, res, next) => {
     );
   }
 
-  const { title, description } = req.body;
-  const InverterId = req.params.pid;
+  const {
+    inverterName,
+    type,
+    inputVoltage,
+    efficiency,
+    wattage,
+    price,
+    // img,
+    link,
+  } = req.body;
+  const inverterId = req.params.pid;
 
-  let Inverter;
+  let inverter;
   try {
-    Inverter = await Inverter.findById(InverterId);
+    inverter = await Inverter.findById(inverterId);
   } catch (err) {
     const error = new HttpError(
       "Something went wrong, could not update Inverter.",
@@ -136,19 +145,25 @@ const updateInverter = async (req, res, next) => {
     return next(error);
   }
 
-  if (Inverter.creator.toString() !== req.userData.userId) {
-    const error = new HttpError(
-      "You are not allowed to edit this Inverter.",
-      401
-    );
-    return next(error);
-  }
+  // if (inverter.creator.toString() !== req.userData.userId) {
+  //   const error = new HttpError(
+  //     "You are not allowed to edit this Inverter.",
+  //     401
+  //   );
+  //   return next(error);
+  // }
 
-  Inverter.title = title;
-  Inverter.description = description;
+  inverter.inverterName = inverterName;
+  inverter.type = type;
+  inverter.inputVoltage = inputVoltage;
+  inverter.efficiency = efficiency;
+  inverter.wattage = wattage;
+  inverter.price = price;
+  // img,
+  inverter.link = link;
 
   try {
-    await Inverter.save();
+    await inverter.save();
   } catch (err) {
     const error = new HttpError(
       "Something went wrong, could not update Inverter.",
@@ -157,15 +172,15 @@ const updateInverter = async (req, res, next) => {
     return next(error);
   }
 
-  res.status(200).json({ Inverter: Inverter.toObject({ getters: true }) });
+  res.status(200).json({ inverter: inverter.toObject({ getters: true }) });
 };
 
 const deleteInverter = async (req, res, next) => {
-  const InverterId = req.params.pid;
+  const inverterId = req.params.pid;
 
-  let Inverter;
+  let inverter;
   try {
-    Inverter = await Inverter.findById(InverterId).populate("creator");
+    inverter = await Inverter.findById(inverterId);
   } catch (err) {
     const error = new HttpError(
       "Something went wrong, could not delete Inverter.",
@@ -174,28 +189,29 @@ const deleteInverter = async (req, res, next) => {
     return next(error);
   }
 
-  if (!Inverter) {
+  if (!inverter) {
     const error = new HttpError("Could not find Inverter for this id.", 404);
     return next(error);
   }
 
-  if (Inverter.creator.id !== req.userData.userId) {
-    const error = new HttpError(
-      "You are not allowed to delete this Inverter.",
-      401
-    );
-    return next(error);
-  }
+  // if (Inverter.creator.id !== req.userData.userId) {
+  //   const error = new HttpError(
+  //     "You are not allowed to delete this Inverter.",
+  //     401
+  //   );
+  //   return next(error);
+  // }
 
-  const imagePath = Inverter.image;
+  // const imagePath = inverter.image;
 
   try {
-    const sess = await mongoose.startSession();
-    sess.startTransaction();
-    await Inverter.remove({ session: sess });
-    Inverter.creator.Inverters.pull(Inverter);
-    await Inverter.creator.save({ session: sess });
-    await sess.commitTransaction();
+    // const sess = await mongoose.startSession();
+    // sess.startTransaction();
+    // await inverter.remove({ session: sess });
+    // inverter.creator.Inverters.pull(inverter);
+    // await inverter.creator.save({ session: sess });
+    // await sess.commitTransaction();
+    await inverter.remove();
   } catch (err) {
     const error = new HttpError(
       "Something went wrong, could not delete Inverter.",
@@ -204,9 +220,9 @@ const deleteInverter = async (req, res, next) => {
     return next(error);
   }
 
-  fs.unlink(imagePath, (err) => {
-    console.log(err);
-  });
+  // fs.unlink(imagePath, (err) => {
+  //   console.log(err);
+  // });
 
   res.status(200).json({ message: "Deleted Inverter." });
 };

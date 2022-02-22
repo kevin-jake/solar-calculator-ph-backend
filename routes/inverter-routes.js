@@ -1,17 +1,17 @@
 const express = require("express");
 const { check } = require("express-validator");
 
-const placesControllers = require("../controllers/inverter-controllers");
+const inverterControllers = require("../controllers/inverter-controllers");
 const fileUpload = require("../middleware/file-upload");
 const checkAuth = require("../middleware/check-auth");
 
 const router = express.Router();
 
-router.get("/", placesControllers.getInverters);
+router.get("/", inverterControllers.getInverters);
 
-router.get("/:pid", placesControllers.getInverterById);
+router.get("/:pid", inverterControllers.getInverterById);
 
-// router.get("/user/:uid", placesControllers.getInvertersByUserId);
+// router.get("/user/:uid", inverterControllers.getInvertersByUserId);
 
 router.use(checkAuth);
 
@@ -25,7 +25,7 @@ router.post(
     check("wattage").not().isEmpty(),
     check("price").not().isEmpty(),
   ],
-  placesControllers.createInverter
+  inverterControllers.createInverter
 );
 
 router.patch(
@@ -37,9 +37,9 @@ router.patch(
     check("wattage").not().isEmpty(),
     check("price").not().isEmpty(),
   ],
-  placesControllers.updateInverter
+  inverterControllers.updateInverter
 );
 
-router.delete("/:pid", placesControllers.deleteInverter);
+router.delete("/:pid", inverterControllers.deleteInverter);
 
 module.exports = router;
