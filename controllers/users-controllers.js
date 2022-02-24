@@ -167,8 +167,8 @@ const login = async (req, res, next) => {
 };
 
 const save = async (req, res, next) => {
-  console.log(req.body);
   const { email, data } = req.body;
+  const datePh = moment.tz(Date.now(), "Asia/Manila").format();
 
   let existingUser;
   try {
@@ -182,6 +182,7 @@ const save = async (req, res, next) => {
   }
 
   existingUser.data = data;
+  existingUser.data.updated_at = datePh;
 
   try {
     await existingUser.save();
