@@ -4,6 +4,7 @@ const jwt = require("jsonwebtoken");
 
 const HttpError = require("../models/http-error");
 const User = require("../models/user");
+const moment = require("moment-timezone");
 
 const getUsers = async (req, res, next) => {
   let users;
@@ -60,12 +61,13 @@ const signup = async (req, res, next) => {
     return next(error);
   }
 
+  const datePh = moment.tz(Date.now(), "Asia/Manila").format();
   const createdUser = new User({
     name,
     email,
     // image: req.file.path,
     password: hashedPassword,
-    inverters: [],
+    created_at: datePh,
   });
 
   try {
@@ -164,6 +166,39 @@ const login = async (req, res, next) => {
   });
 };
 
+const save = async (req, res, next) => {
+  console.log(req.body);
+  const { email, data } = req.body;
+
+  let existingUser;
+  try {
+    existingUser = await User.findOne({ email: email });
+  } catch (err) {
+    const error = new HttpError(
+      "Logging in failed, please try again later.",
+      500
+    );
+    return next(error);
+  }
+
+  existingUser.data = data;
+
+  try {
+    await existingUser.save();
+  } catch (err) {
+    const error = new HttpError("Saving failed, please try again later.", 500);
+    return next(error);
+  }
+
+  res.status(200).json({
+    id: existingUser.id,
+    name: existingUser.name,
+    email: existingUser.email,
+    data: existingUser.data,
+  });
+};
+
 exports.getUsers = getUsers;
 exports.signup = signup;
 exports.login = login;
+exports.save = save;

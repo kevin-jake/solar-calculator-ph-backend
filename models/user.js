@@ -9,6 +9,7 @@ const userSchema = new Schema({
   password: { type: String, required: true, minlength: 6 },
   created_at: { type: String },
   updated_at: { type: String },
+  data: { type: Object },
   // image: { type: String, required: true },
   // inverters: [
   //   { type: mongoose.Types.ObjectId, required: true, ref: "Inverter" },
