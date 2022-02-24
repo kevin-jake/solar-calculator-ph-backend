@@ -167,12 +167,12 @@ const login = async (req, res, next) => {
 };
 
 const save = async (req, res, next) => {
-  const { email, data } = req.body;
+  const { uid, data } = req.body;
   const datePh = moment.tz(Date.now(), "Asia/Manila").format();
-
+  console.log(req.body);
   let existingUser;
   try {
-    existingUser = await User.findOne({ email: email });
+    existingUser = await User.findById(uid);
   } catch (err) {
     const error = new HttpError(
       "Logging in failed, please try again later.",
