@@ -136,6 +136,7 @@ const updateInverter = async (req, res, next) => {
     // img,
     link,
   } = req.body;
+
   const inverterId = req.params.pid;
 
   let inverter;
