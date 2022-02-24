@@ -55,6 +55,7 @@ const createSolarPanel = async (req, res, next) => {
     );
   }
 
+  const datePh = moment.tz(Date.now(), "Asia/Manila").format();
   const {
     pvname,
     wattage,
@@ -82,6 +83,7 @@ const createSolarPanel = async (req, res, next) => {
     // img: req.file.path,
     link,
     creator: req.userData.email,
+    created_at: datePh,
   });
 
   // let user;
@@ -128,6 +130,7 @@ const updateSolarPanel = async (req, res, next) => {
     );
   }
 
+  const datePh = moment.tz(Date.now(), "Asia/Manila").format();
   const {
     pvname,
     wattage,
@@ -173,6 +176,7 @@ const updateSolarPanel = async (req, res, next) => {
   solar_panel.price = price;
   // img,
   solar_panel.link = link;
+  solar_panel.updated_at = datePh;
 
   try {
     await solar_panel.save();

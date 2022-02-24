@@ -5,6 +5,7 @@ const { validationResult } = require("express-validator");
 
 const HttpError = require("../models/http-error");
 const Inverter = require("../models/Inverter");
+const moment = require("moment-timezone");
 
 const getInverters = async (req, res, next) => {
   let inverters;
@@ -48,13 +49,14 @@ const getInverterById = async (req, res, next) => {
 };
 
 const createInverter = async (req, res, next) => {
+  console.log(req.body);
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     return next(
       new HttpError("Invalid inputs passed, please check your data.", 422)
     );
   }
-
+  const datePh = moment.tz(Date.now(), "Asia/Manila").format();
   const {
     inverterName,
     type,
@@ -76,6 +78,7 @@ const createInverter = async (req, res, next) => {
     link,
     // img: req.file.path,
     creator: req.userData.email,
+    created_at: datePh,
   });
 
   // let user;
@@ -122,6 +125,7 @@ const updateInverter = async (req, res, next) => {
     );
   }
 
+  const datePh = moment.tz(Date.now(), "Asia/Manila").format();
   const {
     inverterName,
     type,
@@ -161,6 +165,7 @@ const updateInverter = async (req, res, next) => {
   inverter.price = price;
   // img,
   inverter.link = link;
+  inverter.updated_at = datePh;
 
   try {
     await inverter.save();

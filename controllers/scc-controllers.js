@@ -5,6 +5,7 @@ const { validationResult } = require("express-validator");
 
 const HttpError = require("../models/http-error");
 const SCC = require("../models/scc");
+const moment = require("moment-timezone");
 
 const getSCC = async (req, res, next) => {
   let sccs;
@@ -52,6 +53,7 @@ const createSCC = async (req, res, next) => {
     );
   }
 
+  const datePh = moment.tz(Date.now(), "Asia/Manila").format();
   const {
     sccname,
     type,
@@ -73,6 +75,7 @@ const createSCC = async (req, res, next) => {
     link,
     // img: req.file.path,
     creator: req.userData.email,
+    created_at: datePh,
   });
 
   // let user;
@@ -116,7 +119,7 @@ const updateSCC = async (req, res, next) => {
       new HttpError("Invalid inputs passed, please check your data.", 422)
     );
   }
-
+  const datePh = moment.tz(Date.now(), "Asia/Manila").format();
   const {
     sccname,
     type,
@@ -156,6 +159,7 @@ const updateSCC = async (req, res, next) => {
   scc.price = price;
   // img,
   scc.link = link;
+  scc.updated_at = datePh;
 
   try {
     await scc.save();

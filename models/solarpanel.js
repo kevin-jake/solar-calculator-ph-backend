@@ -15,6 +15,8 @@ const solarpanelSchema = new Schema({
   img: { type: String },
   link: { type: String, required: true },
   creator: { type: String, required: true },
+  created_at: { type: String },
+  updated_at: { type: String },
 });
 
 module.exports = mongoose.model("SolarPanel", solarpanelSchema);

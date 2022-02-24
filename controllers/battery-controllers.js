@@ -5,6 +5,7 @@ const { validationResult } = require("express-validator");
 
 const HttpError = require("../models/http-error");
 const Battery = require("../models/battery");
+const moment = require("moment-timezone");
 
 const getBattery = async (req, res, next) => {
   let battery;
@@ -54,7 +55,7 @@ const createBattery = async (req, res, next) => {
       new HttpError("Invalid inputs passed, please check your data.", 422)
     );
   }
-
+  const datePh = moment.tz(Date.now(), "Asia/Manila").format();
   const {
     battname,
     batttype,
@@ -76,6 +77,7 @@ const createBattery = async (req, res, next) => {
     link,
     // img: req.file.path,
     creator: req.userData.email,
+    created_at: datePh,
   });
 
   // let user;
@@ -94,8 +96,6 @@ const createBattery = async (req, res, next) => {
   //   return next(error);
   // }
 
-  console.log(createdBattery);
-
   try {
     // const sess = await mongoose.startSession();
     // sess.startTransaction();
@@ -104,6 +104,7 @@ const createBattery = async (req, res, next) => {
     // await user.save({ session: sess });
     // await sess.commitTransaction();
   } catch (err) {
+    console.log(err);
     const error = new HttpError(
       "Creating Battery failed, please try again.",
       500
@@ -122,6 +123,7 @@ const updateBattery = async (req, res, next) => {
     );
   }
 
+  const datePh = moment.tz(Date.now(), "Asia/Manila").format();
   const {
     battname,
     batttype,
@@ -161,6 +163,7 @@ const updateBattery = async (req, res, next) => {
   battery.priceperpc = priceperpc;
   // img,
   battery.link = link;
+  battery.updated_at = datePh;
 
   try {
     await battery.save();
