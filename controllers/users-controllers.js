@@ -199,7 +199,33 @@ const save = async (req, res, next) => {
   });
 };
 
+const getUsersById = async (req, res, next) => {
+  const userId = req.params.uid;
+  console.log(req.params);
+  let user;
+  try {
+    user = await User.findById(userId);
+  } catch (err) {
+    const error = new HttpError(
+      "Something went wrong, could not find the User.",
+      500
+    );
+    return next(error);
+  }
+
+  if (!user) {
+    const error = new HttpError(
+      "Could not find User for the provided uid.",
+      404
+    );
+    return next(error);
+  }
+
+  res.json({ user: user.toObject({ getters: true }) });
+};
+
 exports.getUsers = getUsers;
+exports.getUsersById = getUsersById;
 exports.signup = signup;
 exports.login = login;
 exports.save = save;
