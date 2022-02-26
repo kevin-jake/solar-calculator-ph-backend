@@ -56,6 +56,12 @@ const createSolarPanel = async (req, res, next) => {
     );
   }
 
+  if (req.userData.role != "Admin") {
+    return next(
+      new HttpError("You are not allowed to do this operation.", 403)
+    );
+  }
+
   const datePh = moment.tz(Date.now(), "Asia/Manila").format();
   const {
     pvname,
@@ -131,6 +137,12 @@ const updateSolarPanel = async (req, res, next) => {
     );
   }
 
+  if (req.userData.role != "Admin") {
+    return next(
+      new HttpError("You are not allowed to do this operation.", 403)
+    );
+  }
+
   const datePh = moment.tz(Date.now(), "Asia/Manila").format();
   const {
     pvname,
@@ -196,6 +208,12 @@ const updateSolarPanel = async (req, res, next) => {
 
 const deleteSolarPanel = async (req, res, next) => {
   const solar_panelId = req.params.pid;
+
+  if (req.userData.role != "Admin") {
+    return next(
+      new HttpError("You are not allowed to do this operation.", 403)
+    );
+  }
 
   let solar_panel;
   try {

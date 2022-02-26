@@ -55,6 +55,13 @@ const createBattery = async (req, res, next) => {
       new HttpError("Invalid inputs passed, please check your data.", 422)
     );
   }
+
+  if (req.userData.role != "Admin") {
+    return next(
+      new HttpError("You are not allowed to do this operation.", 403)
+    );
+  }
+
   const datePh = moment.tz(Date.now(), "Asia/Manila").format();
   const {
     battname,
@@ -123,6 +130,12 @@ const updateBattery = async (req, res, next) => {
     );
   }
 
+  if (req.userData.role != "Admin") {
+    return next(
+      new HttpError("You are not allowed to do this operation.", 403)
+    );
+  }
+
   const datePh = moment.tz(Date.now(), "Asia/Manila").format();
   const {
     battname,
@@ -180,6 +193,12 @@ const updateBattery = async (req, res, next) => {
 
 const deleteBattery = async (req, res, next) => {
   const battid = req.params.pid;
+
+  if (req.userData.role != "Admin") {
+    return next(
+      new HttpError("You are not allowed to do this operation.", 403)
+    );
+  }
 
   let battery;
   try {

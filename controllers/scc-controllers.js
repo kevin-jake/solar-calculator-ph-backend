@@ -53,6 +53,12 @@ const createSCC = async (req, res, next) => {
     );
   }
 
+  if (req.userData.role != "Admin") {
+    return next(
+      new HttpError("You are not allowed to do this operation.", 403)
+    );
+  }
+
   const datePh = moment.tz(Date.now(), "Asia/Manila").format();
   const {
     sccname,
@@ -120,6 +126,13 @@ const updateSCC = async (req, res, next) => {
       new HttpError("Invalid inputs passed, please check your data.", 422)
     );
   }
+
+  if (req.userData.role != "Admin") {
+    return next(
+      new HttpError("You are not allowed to do this operation.", 403)
+    );
+  }
+
   const datePh = moment.tz(Date.now(), "Asia/Manila").format();
   const {
     sccname,
@@ -177,6 +190,12 @@ const updateSCC = async (req, res, next) => {
 
 const deleteSCC = async (req, res, next) => {
   const sccId = req.params.pid;
+
+  if (req.userData.role != "Admin") {
+    return next(
+      new HttpError("You are not allowed to do this operation.", 403)
+    );
+  }
 
   let scc;
   try {
