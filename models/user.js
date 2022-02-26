@@ -10,6 +10,7 @@ const userSchema = new Schema({
   created_at: { type: String },
   updated_at: { type: String },
   data: { type: Object },
+  role: { type: String },
   // image: { type: String, required: true },
   // inverters: [
   //   { type: mongoose.Types.ObjectId, required: true, ref: "Inverter" },

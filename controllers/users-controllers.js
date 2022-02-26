@@ -29,7 +29,7 @@ const signup = async (req, res, next) => {
     );
   }
 
-  const { name, email, password } = req.body;
+  const { name, email, password, role } = req.body;
 
   let existingUser;
   try {
@@ -65,6 +65,7 @@ const signup = async (req, res, next) => {
   const createdUser = new User({
     name,
     email,
+    role,
     // image: req.file.path,
     password: hashedPassword,
     created_at: datePh,
@@ -97,9 +98,12 @@ const signup = async (req, res, next) => {
 
   console.log("Signup Success");
 
-  res
-    .status(201)
-    .json({ userId: createdUser.id, email: createdUser.email, token: token });
+  res.status(201).json({
+    userId: createdUser.id,
+    email: createdUser.email,
+    role: createdUser.role,
+    token: token,
+  });
 };
 
 const login = async (req, res, next) => {
@@ -159,11 +163,16 @@ const login = async (req, res, next) => {
     return next(error);
   }
   console.log("Login Success");
-  res.json({
+  console.log(existingUser);
+  const response = {
     userId: existingUser.id,
     email: existingUser.email,
+    name: existingUser.name,
+    role: existingUser.role,
     token: token,
-  });
+  };
+  console.log(response);
+  res.json(response);
 };
 
 const save = async (req, res, next) => {

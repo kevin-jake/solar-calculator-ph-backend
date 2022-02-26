@@ -95,6 +95,7 @@ const createSCC = async (req, res, next) => {
   // }
 
   console.log(createdSCC);
+  console.log(req.userData);
 
   try {
     // const sess = await mongoose.startSession();
