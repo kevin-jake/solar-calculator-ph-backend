@@ -1,0 +1,9 @@
+{
+  "env": {
+    "DB_USER": "offgrid",
+    "DB_PASSWORD": "J1qCOvSS5KRDZqfa",
+    "DB_NAME": "offgrid-dev",
+    "DB_URL": "kevinjake.lr4uy.mongodb.net",
+    "JWT_KEY": "supersecret_dont_share"
+  }
+}

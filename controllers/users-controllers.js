@@ -161,7 +161,7 @@ const login = async (req, res, next) => {
         email: existingUser.email,
         role: existingUser.role,
       },
-      "supersecret_dont_share",
+      process.env.JWT_KEY,
       { expiresIn: "1h" }
     );
   } catch (err) {
