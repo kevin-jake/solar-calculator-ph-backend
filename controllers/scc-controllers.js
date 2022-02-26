@@ -53,6 +53,8 @@ const createSCC = async (req, res, next) => {
     );
   }
 
+  console.log(req.userData.role);
+
   if (req.userData.role != "Admin") {
     return next(
       new HttpError("You are not allowed to do this operation.", 403)
