@@ -4,7 +4,7 @@ const { validationResult } = require("express-validator");
 // const mongoose = require("mongoose");
 
 const HttpError = require("../models/http-error");
-const Inverter = require("../models/Inverter");
+const Inverter = require("../models/inverter");
 const moment = require("moment-timezone");
 
 const getInverters = async (req, res, next) => {
