@@ -102,6 +102,7 @@ const signup = async (req, res, next) => {
     userId: createdUser.id,
     email: createdUser.email,
     role: createdUser.role,
+    name: createdUser.name,
     token: token,
   });
 };
