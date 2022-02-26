@@ -80,21 +80,21 @@ const createBattery = async (req, res, next) => {
     created_at: datePh,
   });
 
-  // let user;
-  // try {
-  //   user = await User.findById(req.userData.userId);
-  // } catch (err) {
-  //   const error = new HttpError(
-  //     "Creating Battery failed, please try again.",
-  //     500
-  //   );
-  //   return next(error);
-  // }
+  let user;
+  try {
+    user = await User.findById(req.userData.userId);
+  } catch (err) {
+    const error = new HttpError(
+      "Creating Battery failed, please try again.",
+      500
+    );
+    return next(error);
+  }
 
-  // if (!user) {
-  //   const error = new HttpError("Could not find user for provided id.", 404);
-  //   return next(error);
-  // }
+  if (!user) {
+    const error = new HttpError("Could not find user for provided id.", 404);
+    return next(error);
+  }
 
   try {
     // const sess = await mongoose.startSession();
