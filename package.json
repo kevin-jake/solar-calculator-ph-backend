@@ -1,5 +1,5 @@
 {
-  "name": "offgrid-solar-backend",
+  "name": "solar-calculator-ph-backend",
   "version": "1.0.0",
   "description": "Backend for Offgrid Solar calculator",
   "main": "index.js",
