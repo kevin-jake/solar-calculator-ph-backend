@@ -5,6 +5,7 @@ const { validationResult } = require("express-validator");
 
 const HttpError = require("../models/http-error");
 const Battery = require("../models/battery");
+const BatteryReq = require("../models/battery");
 const moment = require("moment-timezone");
 
 const getBattery = async (req, res, next) => {
@@ -58,7 +59,10 @@ const createBattery = async (req, res, next) => {
 
   if (req.userData.role != "Admin") {
     return next(
-      new HttpError("You are not allowed to do this operation.", 403)
+      new HttpError(
+        "You are not allowed to do this operation. Please use /api/battery/request",
+        403
+      )
     );
   }
 
@@ -249,8 +253,119 @@ const deleteBattery = async (req, res, next) => {
   res.status(200).json({ message: "Deleted Battery." });
 };
 
+const createReqBattery = async (req, res, next) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return next(
+      new HttpError("Invalid inputs passed, please check your data.", 422)
+    );
+  }
+
+  const datePh = moment.tz(Date.now(), "Asia/Manila").format();
+  const {
+    battname,
+    batttype,
+    battmodel,
+    voltage,
+    battcapacity,
+    priceperpc,
+    // img,
+    link,
+  } = req.body;
+
+  const createdBattery = new BatteryReq({
+    battname,
+    batttype,
+    battmodel,
+    voltage,
+    battcapacity,
+    priceperpc,
+    link,
+    // img: req.file.path,
+    creator: req.userData.email,
+    created_at: datePh,
+  });
+
+  try {
+    await createdBattery.save();
+  } catch (err) {
+    console.log(err);
+    const error = new HttpError(
+      "Creating Battery failed, please try again.",
+      500
+    );
+    return next(error);
+  }
+
+  console.log(createdBattery);
+  res.status(201).json({ battery: createdBattery });
+};
+
+const updateReqBattery = async (req, res, next) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return next(
+      new HttpError("Invalid inputs passed, please check your data.", 422)
+    );
+  }
+
+  const datePh = moment.tz(Date.now(), "Asia/Manila").format();
+  const {
+    battname,
+    batttype,
+    battmodel,
+    voltage,
+    battcapacity,
+    priceperpc,
+    // img,
+    link,
+  } = req.body;
+  const battid = req.params.pid;
+
+  let battery;
+  try {
+    battery = await Battery.findById(battid);
+  } catch (err) {
+    const error = new HttpError(
+      "Something went wrong, could not update Battery.",
+      500
+    );
+    return next(error);
+  }
+
+  const updateBattery = new BatteryReq({
+    battname,
+    batttype,
+    battmodel,
+    voltage,
+    battcapacity,
+    priceperpc,
+    link,
+    id_to_edit: battid,
+    // img: req.file.path,
+    creator: req.userData.email,
+    created_at: datePh,
+  });
+
+  try {
+    await updateBattery.save();
+  } catch (err) {
+    console.log(err);
+    const error = new HttpError(
+      "Creating Battery failed, please try again.",
+      500
+    );
+    return next(error);
+  }
+
+  console.log(updateBattery);
+  res.status(201).json({ battery: updateBattery });
+};
+
 exports.getBattery = getBattery;
 exports.getBatteryById = getBatteryById;
 exports.createBattery = createBattery;
+exports.createReqBattery = createReqBattery;
+exports.updateReqBattery = updateReqBattery;
 exports.updateBattery = updateBattery;
 exports.deleteBattery = deleteBattery;

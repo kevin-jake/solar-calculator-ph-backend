@@ -28,6 +28,32 @@ router.post(
   batteryControllers.createBattery
 );
 
+router.post(
+  "/request",
+  // fileUpload.single("image"),
+  [
+    check("battname").not().isEmpty(),
+    check("batttype").not().isEmpty(),
+    check("voltage").not().isEmpty(),
+    check("battcapacity").not().isEmpty(),
+    check("priceperpc").not().isEmpty(),
+  ],
+  batteryControllers.createReqBattery
+);
+
+router.post(
+  "/request/:pid",
+  // fileUpload.single("image"),
+  [
+    check("battname").not().isEmpty(),
+    check("batttype").not().isEmpty(),
+    check("voltage").not().isEmpty(),
+    check("battcapacity").not().isEmpty(),
+    check("priceperpc").not().isEmpty(),
+  ],
+  batteryControllers.updateReqBattery
+);
+
 router.patch(
   "/:pid",
   [
