@@ -12,10 +12,8 @@ const batterySchema = new Schema({
   img: { type: String },
   link: { type: String, required: true },
   creator: { type: String, required: true },
-  id_to_edit: { type: String },
   created_at: { type: String },
   updated_at: { type: String },
 });
 
 module.exports = mongoose.model("Battery", batterySchema);
-module.exports = mongoose.model("Battery-Req", batterySchema);

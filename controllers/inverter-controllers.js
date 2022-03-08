@@ -5,6 +5,7 @@ const { validationResult } = require("express-validator");
 
 const HttpError = require("../models/http-error");
 const Inverter = require("../models/inverter");
+const InverterReq = require("../models/inverter-req");
 const moment = require("moment-timezone");
 
 const getInverters = async (req, res, next) => {
@@ -252,8 +253,129 @@ const deleteInverter = async (req, res, next) => {
   res.status(200).json({ message: "Deleted Inverter." });
 };
 
+const createReqInverter = async (req, res, next) => {
+  console.log(req.body);
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return next(
+      new HttpError("Invalid inputs passed, please check your data.", 422)
+    );
+  }
+
+  const datePh = moment.tz(Date.now(), "Asia/Manila").format();
+  const {
+    inverterName,
+    type,
+    inputVoltage,
+    efficiency,
+    wattage,
+    price,
+    // img,
+    link,
+  } = req.body;
+
+  const createdInverter = new InverterReq({
+    inverterName,
+    type,
+    inputVoltage,
+    efficiency,
+    wattage,
+    price,
+    link,
+    // img: req.file.path,
+    creator: req.userData.email,
+    created_at: datePh,
+  });
+
+  try {
+    // const sess = await mongoose.startSession();
+    // sess.startTransaction();
+    await createdInverter.save();
+    // user.Inverters.push(createdInverter);
+    // await user.save({ session: sess });
+    // await sess.commitTransaction();
+  } catch (err) {
+    const error = new HttpError(
+      "Creating Inverter failed, please try again.",
+      500
+    );
+    return next(error);
+  }
+
+  console.log(createdInverter);
+  res.status(201).json({ Inverter: createdInverter });
+};
+
+const updateReqInverter = async (req, res, next) => {
+  console.log(req.body);
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return next(
+      new HttpError("Invalid inputs passed, please check your data.", 422)
+    );
+  }
+
+  const datePh = moment.tz(Date.now(), "Asia/Manila").format();
+  const {
+    inverterName,
+    type,
+    inputVoltage,
+    efficiency,
+    wattage,
+    price,
+    // img,
+    link,
+  } = req.body;
+  const inverterid = req.params.pid;
+
+  let inverter;
+  try {
+    inverter = await Inverter.findById(inverterid);
+  } catch (err) {
+    const error = new HttpError(
+      "Something went wrong, could not update Inverter.",
+      500
+    );
+    return next(error);
+  }
+
+  const updateInverter = new InverterReq({
+    inverterName,
+    type,
+    inputVoltage,
+    efficiency,
+    wattage,
+    price,
+    link,
+    id_to_edit: inverterid,
+    // img: req.file.path,
+    creator: req.userData.email,
+    created_at: datePh,
+  });
+
+  try {
+    // const sess = await mongoose.startSession();
+    // sess.startTransaction();
+    await updateInverter.save();
+    // user.Inverters.push(createdInverter);
+    // await user.save({ session: sess });
+    // await sess.commitTransaction();
+  } catch (err) {
+    const error = new HttpError(
+      "Creating Inverter failed, please try again.",
+      500
+    );
+    return next(error);
+  }
+
+  console.log(updateInverter);
+  res.status(201).json({ Inverter: updateInverter });
+};
+
 exports.getInverters = getInverters;
 exports.getInverterById = getInverterById;
 exports.createInverter = createInverter;
 exports.updateInverter = updateInverter;
 exports.deleteInverter = deleteInverter;
+exports.createReqInverter = createReqInverter;
+exports.updateReqInverter = updateReqInverter;

@@ -5,7 +5,7 @@ const { validationResult } = require("express-validator");
 
 const HttpError = require("../models/http-error");
 const Battery = require("../models/battery");
-const BatteryReq = require("../models/battery");
+const BatteryReq = require("../models/battery-req");
 const moment = require("moment-timezone");
 
 const getBattery = async (req, res, next) => {
