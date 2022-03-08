@@ -44,4 +44,32 @@ router.patch(
 
 router.delete("/:pid", sccControllers.deleteSCC);
 
+router.post(
+  "/request",
+  // fileUpload.single("image"),
+  [
+    check("sccname").not().isEmpty(),
+    check("type").not().isEmpty(),
+    check("brand").not().isEmpty(),
+    check("supplier").not().isEmpty(),
+    check("amprating").not().isEmpty(),
+    check("price").not().isEmpty(),
+  ],
+  sccControllers.createReqSCC
+);
+
+router.post(
+  "/request/:pid",
+  // fileUpload.single("image"),
+  [
+    check("sccname").not().isEmpty(),
+    check("type").not().isEmpty(),
+    check("brand").not().isEmpty(),
+    check("supplier").not().isEmpty(),
+    check("amprating").not().isEmpty(),
+    check("price").not().isEmpty(),
+  ],
+  sccControllers.updateReqSCC
+);
+
 module.exports = router;
