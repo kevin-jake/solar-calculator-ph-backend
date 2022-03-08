@@ -46,4 +46,34 @@ router.patch(
 
 router.delete("/:pid", solarpanelControllers.deleteSolarPanel);
 
+router.post(
+  "/request",
+  // fileUpload.single("image"),
+  [
+    check("pvname").not().isEmpty(),
+    check("wattage").not().isEmpty(),
+    check("voc").not().isEmpty(),
+    check("imp").not().isEmpty(),
+    check("vmp").not().isEmpty(),
+    check("isc").not().isEmpty(),
+    check("price").not().isEmpty(),
+  ],
+  solarpanelControllers.createReqSolarPanel
+);
+
+router.post(
+  "/request/:pid",
+  // fileUpload.single("image"),
+  [
+    check("pvname").not().isEmpty(),
+    check("wattage").not().isEmpty(),
+    check("voc").not().isEmpty(),
+    check("imp").not().isEmpty(),
+    check("vmp").not().isEmpty(),
+    check("isc").not().isEmpty(),
+    check("price").not().isEmpty(),
+  ],
+  solarpanelControllers.updateReqSolarPanel
+);
+
 module.exports = router;

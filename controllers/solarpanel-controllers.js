@@ -5,6 +5,7 @@ const { validationResult } = require("express-validator");
 
 const HttpError = require("../models/http-error");
 const SolarPanel = require("../models/solarpanel");
+const SolarPanelReq = require("../models/solarpanel-req");
 const moment = require("moment-timezone");
 
 const getSolarPanel = async (req, res, next) => {
@@ -264,8 +265,130 @@ const deleteSolarPanel = async (req, res, next) => {
   res.status(200).json({ message: "Deleted Solar Panel." });
 };
 
+const createReqSolarPanel = async (req, res, next) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return next(
+      new HttpError("Invalid inputs passed, please check your data.", 422)
+    );
+  }
+
+  const datePh = moment.tz(Date.now(), "Asia/Manila").format();
+  const {
+    pvname,
+    wattage,
+    brand,
+    supplier,
+    voc,
+    imp,
+    vmp,
+    isc,
+    price,
+    // img,
+    link,
+  } = req.body;
+
+  const createdSolarPanelReq = new SolarPanelReq({
+    pvname,
+    wattage,
+    brand,
+    supplier,
+    voc,
+    imp,
+    vmp,
+    isc,
+    price,
+    // img: req.file.path,
+    link,
+    creator: req.userData.email,
+    created_at: datePh,
+  });
+
+  console.log(createdSolarPanelReq);
+
+  try {
+    await createdSolarPanelReq.save();
+  } catch (err) {
+    const error = new HttpError(
+      "Creating Solar Panel failed, please try again.",
+      500
+    );
+    return next(error);
+  }
+
+  res.status(201).json({ solar_panel: createdSolarPanelReq });
+};
+
+const updateReqSolarPanel = async (req, res, next) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return next(
+      new HttpError("Invalid inputs passed, please check your data.", 422)
+    );
+  }
+
+  const datePh = moment.tz(Date.now(), "Asia/Manila").format();
+  const {
+    pvname,
+    wattage,
+    brand,
+    supplier,
+    voc,
+    imp,
+    vmp,
+    isc,
+    price,
+    // img,
+    link,
+  } = req.body;
+  const solar_panelId = req.params.pid;
+
+  let solar_panel;
+  try {
+    solar_panel = await SolarPanel.findById(solar_panelId);
+  } catch (err) {
+    const error = new HttpError(
+      "Something went wrong, could not update Solar Panel.",
+      500
+    );
+    return next(error);
+  }
+
+  const updateSolarPanelReq = new SolarPanelReq({
+    pvname,
+    wattage,
+    brand,
+    supplier,
+    voc,
+    imp,
+    vmp,
+    isc,
+    price,
+    // img: req.file.path,
+    link,
+    creator: req.userData.email,
+    created_at: datePh,
+  });
+
+  console.log(updateSolarPanelReq);
+
+  try {
+    await updateSolarPanelReq.save();
+  } catch (err) {
+    const error = new HttpError(
+      "Creating Solar Panel failed, please try again.",
+      500
+    );
+    return next(error);
+  }
+
+  res.status(201).json({ solar_panel: updateSolarPanelReq });
+};
+
 exports.getSolarPanel = getSolarPanel;
 exports.getSolarPanelById = getSolarPanelById;
 exports.createSolarPanel = createSolarPanel;
 exports.updateSolarPanel = updateSolarPanel;
 exports.deleteSolarPanel = deleteSolarPanel;
+exports.createReqSolarPanel = createReqSolarPanel;
+exports.updateReqSolarPanel = updateReqSolarPanel;
