@@ -24,6 +24,22 @@ const getBattery = async (req, res, next) => {
   });
 };
 
+const getBatteryReqs = async (req, res, next) => {
+  let battery;
+  try {
+    battery = await BatteryReq.find();
+  } catch (err) {
+    const error = new HttpError(
+      "Fetching Battery Requests failed, please try again later.",
+      500
+    );
+    return next(error);
+  }
+  res.json({
+    battery: battery.map((user) => user.toObject({ getters: true })),
+  });
+};
+
 const getBatteryById = async (req, res, next) => {
   const battId = req.params.pid;
 
@@ -364,6 +380,7 @@ const updateReqBattery = async (req, res, next) => {
 
 exports.getBattery = getBattery;
 exports.getBatteryById = getBatteryById;
+exports.getBatteryReqs = getBatteryReqs;
 exports.createBattery = createBattery;
 exports.createReqBattery = createReqBattery;
 exports.updateReqBattery = updateReqBattery;

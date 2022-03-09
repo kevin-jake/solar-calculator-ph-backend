@@ -24,6 +24,22 @@ const getSCC = async (req, res, next) => {
   });
 };
 
+const getSCCReqs = async (req, res, next) => {
+  let sccs;
+  try {
+    sccs = await SCCReq.find();
+  } catch (err) {
+    const error = new HttpError(
+      "Fetching sccs failed, please try again later.",
+      500
+    );
+    return next(error);
+  }
+  res.json({
+    scc: sccs.map((user) => user.toObject({ getters: true })),
+  });
+};
+
 const getSCCById = async (req, res, next) => {
   const sccId = req.params.pid;
 
@@ -365,6 +381,7 @@ const updateReqSCC = async (req, res, next) => {
 };
 
 exports.getSCC = getSCC;
+exports.getSCCReqs = getSCCReqs;
 exports.getSCCById = getSCCById;
 exports.createSCC = createSCC;
 exports.updateSCC = updateSCC;
