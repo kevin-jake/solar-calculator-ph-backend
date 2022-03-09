@@ -5,6 +5,7 @@ const { validationResult } = require("express-validator");
 
 const HttpError = require("../models/http-error");
 const SCC = require("../models/scc");
+const SCCReq = require("../models/scc-req");
 const moment = require("moment-timezone");
 
 const getSCC = async (req, res, next) => {
@@ -248,8 +249,125 @@ const deleteSCC = async (req, res, next) => {
   res.status(200).json({ message: "Deleted SCC." });
 };
 
+const createReqSCC = async (req, res, next) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return next(
+      new HttpError("Invalid inputs passed, please check your data.", 422)
+    );
+  }
+
+  const datePh = moment.tz(Date.now(), "Asia/Manila").format();
+  const {
+    sccname,
+    type,
+    brand,
+    supplier,
+    amprating,
+    price,
+    // img,
+    link,
+  } = req.body;
+
+  const createdSCCReq = new SCCReq({
+    sccname,
+    type,
+    brand,
+    supplier,
+    amprating,
+    price,
+    link,
+    // img: req.file.path,
+    creator: req.userData.email,
+    created_at: datePh,
+  });
+
+  console.log(createdSCCReq);
+
+  try {
+    // const sess = await mongoose.startSession();
+    // sess.startTransaction();
+    await createdSCCReq.save();
+    // user.SCC.push(createdSCC);
+    // await user.save({ session: sess });
+    // await sess.commitTransaction();
+  } catch (err) {
+    console.log(err);
+    const error = new HttpError("Creating SCC failed, please try again.", 500);
+    return next(error);
+  }
+
+  res.status(201).json({ scc: createdSCCReq });
+};
+
+const updateReqSCC = async (req, res, next) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return next(
+      new HttpError("Invalid inputs passed, please check your data.", 422)
+    );
+  }
+
+  const datePh = moment.tz(Date.now(), "Asia/Manila").format();
+  const {
+    sccname,
+    type,
+    brand,
+    supplier,
+    amprating,
+    price,
+    // img,
+    link,
+  } = req.body;
+  const sccId = req.params.pid;
+
+  let scc;
+  try {
+    scc = await SCC.findById(sccId);
+  } catch (err) {
+    const error = new HttpError(
+      "Something went wrong, could not update SCC.",
+      500
+    );
+    return next(error);
+  }
+
+  const updateSCCReq = new SCCReq({
+    sccname,
+    type,
+    brand,
+    supplier,
+    amprating,
+    price,
+    link,
+    id_to_edit: sccId,
+    // img: req.file.path,
+    creator: req.userData.email,
+    created_at: datePh,
+  });
+
+  console.log(updateSCCReq);
+
+  try {
+    // const sess = await mongoose.startSession();
+    // sess.startTransaction();
+    await updateSCCReq.save();
+    // user.SCC.push(createdSCC);
+    // await user.save({ session: sess });
+    // await sess.commitTransaction();
+  } catch (err) {
+    console.log(err);
+    const error = new HttpError("Updating SCC failed, please try again.", 500);
+    return next(error);
+  }
+
+  res.status(201).json({ scc: updateSCCReq });
+};
+
 exports.getSCC = getSCC;
 exports.getSCCById = getSCCById;
 exports.createSCC = createSCC;
 exports.updateSCC = updateSCC;
 exports.deleteSCC = deleteSCC;
+exports.createReqSCC = createReqSCC;
+exports.updateReqSCC = updateReqSCC;

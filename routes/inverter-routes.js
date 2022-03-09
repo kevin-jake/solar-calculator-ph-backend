@@ -40,6 +40,31 @@ router.patch(
   inverterControllers.updateInverter
 );
 
+router.post(
+  "/request",
+  // fileUpload.single("image"),
+  [
+    check("inverterName").not().isEmpty(),
+    check("inputVoltage").not().isEmpty(),
+    check("efficiency").not().isEmpty(),
+    check("wattage").not().isEmpty(),
+    check("price").not().isEmpty(),
+  ],
+  inverterControllers.createReqInverter
+);
+
+router.post(
+  "/request/:pid",
+  [
+    check("inverterName").not().isEmpty(),
+    check("inputVoltage").not().isEmpty(),
+    check("efficiency").not().isEmpty(),
+    check("wattage").not().isEmpty(),
+    check("price").not().isEmpty(),
+  ],
+  inverterControllers.updateReqInverter
+);
+
 router.delete("/:pid", inverterControllers.deleteInverter);
 
 module.exports = router;
