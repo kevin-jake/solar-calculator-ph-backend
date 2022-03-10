@@ -62,7 +62,7 @@ const getSolarPanelById = async (req, res, next) => {
     return next(error);
   }
 
-  res.json({ solar_panel: solar_panel.toObject({ getters: true }) });
+  res.json({ pv: solar_panel.toObject({ getters: true }) });
 };
 
 const createSolarPanel = async (req, res, next) => {

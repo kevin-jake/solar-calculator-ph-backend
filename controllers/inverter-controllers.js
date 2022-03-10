@@ -62,7 +62,7 @@ const getInverterById = async (req, res, next) => {
     return next(error);
   }
 
-  res.json({ Inverter: inverter.toObject({ getters: true }) });
+  res.json({ inverter: inverter.toObject({ getters: true }) });
 };
 
 const createInverter = async (req, res, next) => {
