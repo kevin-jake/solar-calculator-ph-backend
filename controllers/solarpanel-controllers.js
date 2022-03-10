@@ -24,6 +24,22 @@ const getSolarPanel = async (req, res, next) => {
   });
 };
 
+const getSolarPanelReqs = async (req, res, next) => {
+  let solar_panel;
+  try {
+    solar_panel = await SolarPanelReq.find();
+  } catch (err) {
+    const error = new HttpError(
+      "Fetching Solar Panel failed, please try again later.",
+      500
+    );
+    return next(error);
+  }
+  res.json({
+    pv: solar_panel.map((user) => user.toObject({ getters: true })),
+  });
+};
+
 const getSolarPanelById = async (req, res, next) => {
   const solar_panelId = req.params.pid;
 
@@ -46,7 +62,7 @@ const getSolarPanelById = async (req, res, next) => {
     return next(error);
   }
 
-  res.json({ solar_panel: solar_panel.toObject({ getters: true }) });
+  res.json({ pv: solar_panel.toObject({ getters: true }) });
 };
 
 const createSolarPanel = async (req, res, next) => {
@@ -387,6 +403,7 @@ const updateReqSolarPanel = async (req, res, next) => {
 };
 
 exports.getSolarPanel = getSolarPanel;
+exports.getSolarPanelReqs = getSolarPanelReqs;
 exports.getSolarPanelById = getSolarPanelById;
 exports.createSolarPanel = createSolarPanel;
 exports.updateSolarPanel = updateSolarPanel;

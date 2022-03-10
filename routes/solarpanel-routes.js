@@ -9,11 +9,12 @@ const router = express.Router();
 
 router.get("/", solarpanelControllers.getSolarPanel);
 
-router.get("/:pid", solarpanelControllers.getSolarPanelById);
-
 // router.get("/user/:uid", solarpanelControllers.getSolarPanelsByUserId);
 
 router.use(checkAuth);
+
+router.get("/requests", solarpanelControllers.getSolarPanelReqs);
+router.get("/:pid", solarpanelControllers.getSolarPanelById);
 
 router.post(
   "/",

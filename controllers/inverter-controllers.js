@@ -24,6 +24,22 @@ const getInverters = async (req, res, next) => {
   });
 };
 
+const getInverterReqs = async (req, res, next) => {
+  let inverters;
+  try {
+    inverters = await InverterReq.find();
+  } catch (err) {
+    const error = new HttpError(
+      "Fetching inverters failed, please try again later.",
+      500
+    );
+    return next(error);
+  }
+  res.json({
+    inverter: inverters.map((user) => user.toObject({ getters: true })),
+  });
+};
+
 const getInverterById = async (req, res, next) => {
   const inverterId = req.params.pid;
 
@@ -46,7 +62,7 @@ const getInverterById = async (req, res, next) => {
     return next(error);
   }
 
-  res.json({ Inverter: inverter.toObject({ getters: true }) });
+  res.json({ inverter: inverter.toObject({ getters: true }) });
 };
 
 const createInverter = async (req, res, next) => {
@@ -373,6 +389,7 @@ const updateReqInverter = async (req, res, next) => {
 };
 
 exports.getInverters = getInverters;
+exports.getInverterReqs = getInverterReqs;
 exports.getInverterById = getInverterById;
 exports.createInverter = createInverter;
 exports.updateInverter = updateInverter;

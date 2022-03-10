@@ -9,11 +9,12 @@ const router = express.Router();
 
 router.get("/", inverterControllers.getInverters);
 
-router.get("/:pid", inverterControllers.getInverterById);
-
 // router.get("/user/:uid", inverterControllers.getInvertersByUserId);
 
 router.use(checkAuth);
+
+router.get("/requests", inverterControllers.getInverterReqs);
+router.get("/:pid", inverterControllers.getInverterById);
 
 router.post(
   "/",

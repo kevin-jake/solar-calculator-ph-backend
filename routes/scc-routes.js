@@ -9,11 +9,12 @@ const router = express.Router();
 
 router.get("/", sccControllers.getSCC);
 
-router.get("/:pid", sccControllers.getSCCById);
-
 // router.get("/user/:uid", sccControllers.getSCCByUserId);
 
 router.use(checkAuth);
+
+router.get("/requests", sccControllers.getSCCReqs);
+router.get("/:pid", sccControllers.getSCCById);
 
 router.post(
   "/",

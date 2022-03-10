@@ -9,11 +9,13 @@ const router = express.Router();
 
 router.get("/", batteryControllers.getBattery);
 
-router.get("/:pid", batteryControllers.getBatteryById);
-
 // router.get("/user/:uid", inverterControllers.getInvertersByUserId);
 
 router.use(checkAuth);
+
+router.get("/requests", batteryControllers.getBatteryReqs);
+
+router.get("/:pid", batteryControllers.getBatteryById);
 
 router.post(
   "/",
