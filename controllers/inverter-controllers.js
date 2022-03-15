@@ -92,6 +92,13 @@ const createInverter = async (req, res, next) => {
     link,
   } = req.body;
 
+  let requestor;
+  if (req.body.creator) {
+    requestor = req.body.creator;
+  } else {
+    requestor = req.userData.email;
+  }
+
   const createdInverter = new Inverter({
     inverterName,
     type,
@@ -101,7 +108,8 @@ const createInverter = async (req, res, next) => {
     price,
     link,
     // img: req.file.path,
-    creator: req.userData.email,
+    creator: requestor,
+    approved_by: null || req.userData.email,
     created_at: datePh,
   });
 
@@ -388,6 +396,71 @@ const updateReqInverter = async (req, res, next) => {
   res.status(201).json({ Inverter: updateInverter });
 };
 
+const updateApproveReqInverter = async (req, res, next) => {
+  if (req.userData.role != "Admin") {
+    return next(
+      new HttpError("You are not allowed to do this operation.", 403)
+    );
+  }
+
+  const datePh = moment.tz(Date.now(), "Asia/Manila").format();
+  const {
+    inverterName,
+    type,
+    inputVoltage,
+    efficiency,
+    wattage,
+    price,
+    // img,
+    link,
+    status,
+  } = req.body;
+
+  const inverterId = req.params.pid;
+
+  let inverter;
+  try {
+    inverter = await InverterReq.findById(inverterId);
+  } catch (err) {
+    const error = new HttpError(
+      "Something went wrong, could not update Inverter.",
+      500
+    );
+    return next(error);
+  }
+
+  // if (inverter.creator.toString() !== req.userData.userId) {
+  //   const error = new HttpError(
+  //     "You are not allowed to edit this Inverter.",
+  //     401
+  //   );
+  //   return next(error);
+  // }
+
+  inverter.inverterName = inverterName;
+  inverter.type = type;
+  inverter.inputVoltage = inputVoltage;
+  inverter.efficiency = efficiency;
+  inverter.wattage = wattage;
+  inverter.price = price;
+  // img,
+  inverter.status = status;
+  inverter.link = link;
+  inverter.updated_at = datePh;
+
+  try {
+    await inverter.save();
+  } catch (err) {
+    const error = new HttpError(
+      "Something went wrong, could not update Inverter.",
+      500
+    );
+    return next(error);
+  }
+
+  res.status(200).json({ inverter: inverter.toObject({ getters: true }) });
+};
+
 exports.getInverters = getInverters;
 exports.getInverterReqs = getInverterReqs;
 exports.getInverterById = getInverterById;
@@ -396,3 +469,4 @@ exports.updateInverter = updateInverter;
 exports.deleteInverter = deleteInverter;
 exports.createReqInverter = createReqInverter;
 exports.updateReqInverter = updateReqInverter;
+exports.updateApproveReqInverter = updateApproveReqInverter;

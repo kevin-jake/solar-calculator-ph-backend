@@ -94,6 +94,13 @@ const createBattery = async (req, res, next) => {
     link,
   } = req.body;
 
+  let requestor;
+  if (req.body.creator) {
+    requestor = req.body.creator;
+  } else {
+    requestor = req.userData.email;
+  }
+
   const createdBattery = new Battery({
     battname,
     batttype,
@@ -103,7 +110,8 @@ const createBattery = async (req, res, next) => {
     priceperpc,
     link,
     // img: req.file.path,
-    creator: req.userData.email,
+    creator: requestor,
+    approved_by: null || req.userData.email,
     created_at: datePh,
   });
 
@@ -298,6 +306,7 @@ const createReqBattery = async (req, res, next) => {
     priceperpc,
     link,
     // img: req.file.path,
+    status: "Request",
     creator: req.userData.email,
     created_at: datePh,
   });
@@ -358,6 +367,7 @@ const updateReqBattery = async (req, res, next) => {
     priceperpc,
     link,
     id_to_edit: battid,
+    status: "Request",
     // img: req.file.path,
     creator: req.userData.email,
     created_at: datePh,

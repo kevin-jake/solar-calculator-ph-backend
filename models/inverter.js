@@ -12,6 +12,8 @@ const inverterSchema = new Schema({
   img: { type: String },
   link: { type: String, required: true },
   creator: { type: String, required: true },
+  modified_by: { type: String },
+  approved_by: { type: String },
   created_at: { type: String },
   updated_at: { type: String },
 });
