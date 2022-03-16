@@ -396,7 +396,7 @@ const updateReqInverter = async (req, res, next) => {
   res.status(201).json({ Inverter: updateInverter });
 };
 
-const updateApproveReqInverter = async (req, res, next) => {
+const statusUpdateInverter = async (req, res, next) => {
   if (req.userData.role != "Admin") {
     return next(
       new HttpError("You are not allowed to do this operation.", 403)
@@ -469,4 +469,4 @@ exports.updateInverter = updateInverter;
 exports.deleteInverter = deleteInverter;
 exports.createReqInverter = createReqInverter;
 exports.updateReqInverter = updateReqInverter;
-exports.updateApproveReqInverter = updateApproveReqInverter;
+exports.statusUpdateInverter = statusUpdateInverter;

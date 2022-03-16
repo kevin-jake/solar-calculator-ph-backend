@@ -69,7 +69,7 @@ router.post(
 router.patch(
   "/request/:pid",
   [check("status").not().isEmpty()],
-  inverterControllers.updateApproveReqInverter
+  inverterControllers.statusUpdateInverter
 );
 
 router.delete("/:pid", inverterControllers.deleteInverter);
