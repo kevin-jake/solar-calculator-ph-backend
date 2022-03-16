@@ -205,6 +205,7 @@ const updateBattery = async (req, res, next) => {
   // img,
   battery.link = link;
   battery.updated_at = datePh;
+  battery.approved_by = req.userData.email;
 
   try {
     await battery.save();
