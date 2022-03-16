@@ -423,7 +423,7 @@ const statusUpdateInverter = async (req, res, next) => {
     inverter = await InverterReq.findById(inverterId);
   } catch (err) {
     const error = new HttpError(
-      "Something went wrong, could not update Inverter.",
+      "Something went wrong, could not update Inverter Request.",
       500
     );
     return next(error);
@@ -452,7 +452,7 @@ const statusUpdateInverter = async (req, res, next) => {
     await inverter.save();
   } catch (err) {
     const error = new HttpError(
-      "Something went wrong, could not update Inverter.",
+      "Something went wrong, could not update Inverter Request.",
       500
     );
     return next(error);

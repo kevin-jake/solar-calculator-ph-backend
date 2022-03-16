@@ -43,6 +43,18 @@ router.post(
   batteryControllers.createReqBattery
 );
 
+router.patch(
+  "/:pid",
+  [
+    check("battname").not().isEmpty(),
+    check("batttype").not().isEmpty(),
+    check("voltage").not().isEmpty(),
+    check("battcapacity").not().isEmpty(),
+    check("priceperpc").not().isEmpty(),
+  ],
+  batteryControllers.updateBattery
+);
+
 router.post(
   "/request/:pid",
   // fileUpload.single("image"),
@@ -57,15 +69,9 @@ router.post(
 );
 
 router.patch(
-  "/:pid",
-  [
-    check("battname").not().isEmpty(),
-    check("batttype").not().isEmpty(),
-    check("voltage").not().isEmpty(),
-    check("battcapacity").not().isEmpty(),
-    check("priceperpc").not().isEmpty(),
-  ],
-  batteryControllers.updateBattery
+  "/request/:pid",
+  [check("status").not().isEmpty()],
+  batteryControllers.statusUpdateBattery
 );
 
 router.delete("/:pid", batteryControllers.deleteBattery);
