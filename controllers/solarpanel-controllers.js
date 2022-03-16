@@ -94,6 +94,13 @@ const createSolarPanel = async (req, res, next) => {
     link,
   } = req.body;
 
+  let requestor;
+  if (req.body.creator) {
+    requestor = req.body.creator;
+  } else {
+    requestor = req.userData.email;
+  }
+
   const createdSolarPanel = new SolarPanel({
     pvname,
     wattage,
@@ -106,7 +113,8 @@ const createSolarPanel = async (req, res, next) => {
     price,
     // img: req.file.path,
     link,
-    creator: req.userData.email,
+    creator: requestor,
+    approved_by: null || req.userData.email,
     created_at: datePh,
   });
 
@@ -207,6 +215,7 @@ const updateSolarPanel = async (req, res, next) => {
   // img,
   solar_panel.link = link;
   solar_panel.updated_at = datePh;
+  solar_panel.approved_by = req.userData.email;
 
   try {
     await solar_panel.save();
@@ -402,6 +411,78 @@ const updateReqSolarPanel = async (req, res, next) => {
   res.status(201).json({ solar_panel: updateSolarPanelReq });
 };
 
+const statusUpdateSolarPanel = async (req, res, next) => {
+  if (req.userData.role != "Admin") {
+    return next(
+      new HttpError("You are not allowed to do this operation.", 403)
+    );
+  }
+
+  const datePh = moment.tz(Date.now(), "Asia/Manila").format();
+  const {
+    pvname,
+    wattage,
+    brand,
+    supplier,
+    voc,
+    imp,
+    vmp,
+    isc,
+    price,
+    // img,
+    link,
+    status,
+  } = req.body;
+  const solar_panelId = req.params.pid;
+
+  let solar_panel;
+  try {
+    solar_panel = await SolarPanelReq.findById(solar_panelId);
+  } catch (err) {
+    const error = new HttpError(
+      "Something went wrong, could not update Solar Panel Request.",
+      500
+    );
+    return next(error);
+  }
+
+  // if (solar_panel.creator.toString() !== req.userData.userId) {
+  //   const error = new HttpError(
+  //     "You are not allowed to edit this Solar Panel.",
+  //     401
+  //   );
+  //   return next(error);
+  // }
+
+  solar_panel.pvname = pvname;
+  solar_panel.wattage = wattage;
+  solar_panel.brand = brand;
+  solar_panel.supplier = supplier;
+  solar_panel.voc = voc;
+  solar_panel.imp = imp;
+  solar_panel.vmp = vmp;
+  solar_panel.isc = isc;
+  solar_panel.price = price;
+  // img,
+  solar_panel.status = status;
+  solar_panel.link = link;
+  solar_panel.updated_at = datePh;
+
+  try {
+    await solar_panel.save();
+  } catch (err) {
+    const error = new HttpError(
+      "Something went wrong, could not update Solar Panel Request.",
+      500
+    );
+    return next(error);
+  }
+
+  res
+    .status(200)
+    .json({ solar_panel: solar_panel.toObject({ getters: true }) });
+};
+
 exports.getSolarPanel = getSolarPanel;
 exports.getSolarPanelReqs = getSolarPanelReqs;
 exports.getSolarPanelById = getSolarPanelById;
@@ -410,3 +491,4 @@ exports.updateSolarPanel = updateSolarPanel;
 exports.deleteSolarPanel = deleteSolarPanel;
 exports.createReqSolarPanel = createReqSolarPanel;
 exports.updateReqSolarPanel = updateReqSolarPanel;
+exports.statusUpdateSolarPanel = statusUpdateSolarPanel;

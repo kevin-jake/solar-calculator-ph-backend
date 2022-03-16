@@ -45,8 +45,6 @@ router.patch(
   solarpanelControllers.updateSolarPanel
 );
 
-router.delete("/:pid", solarpanelControllers.deleteSolarPanel);
-
 router.post(
   "/request",
   // fileUpload.single("image"),
@@ -76,5 +74,13 @@ router.post(
   ],
   solarpanelControllers.updateReqSolarPanel
 );
+
+router.patch(
+  "/request/:pid",
+  [check("status").not().isEmpty()],
+  solarpanelControllers.statusUpdateSolarPanel
+);
+
+router.delete("/:pid", solarpanelControllers.deleteSolarPanel);
 
 module.exports = router;
