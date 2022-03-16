@@ -205,6 +205,7 @@ const updateInverter = async (req, res, next) => {
   // img,
   inverter.link = link;
   inverter.updated_at = datePh;
+  inverter.approved_by = req.userData.email;
 
   try {
     await inverter.save();
