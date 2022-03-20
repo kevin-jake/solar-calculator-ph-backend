@@ -307,6 +307,7 @@ const createReqInverter = async (req, res, next) => {
     wattage,
     price,
     link,
+    status: "Request",
     // img: req.file.path,
     creator: req.userData.email,
     created_at: datePh,
@@ -374,6 +375,7 @@ const updateReqInverter = async (req, res, next) => {
     link,
     id_to_edit: inverterid,
     // img: req.file.path,
+    status: "Request",
     creator: req.userData.email,
     created_at: datePh,
   });
