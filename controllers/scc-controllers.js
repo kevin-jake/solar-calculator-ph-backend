@@ -300,6 +300,7 @@ const createReqSCC = async (req, res, next) => {
     price,
     link,
     // img: req.file.path,
+    status: "Request",
     creator: req.userData.email,
     created_at: datePh,
   });
@@ -364,6 +365,7 @@ const updateReqSCC = async (req, res, next) => {
     link,
     id_to_edit: sccId,
     // img: req.file.path,
+    status: "Request",
     creator: req.userData.email,
     created_at: datePh,
   });

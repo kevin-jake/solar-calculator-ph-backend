@@ -325,6 +325,7 @@ const createReqSolarPanel = async (req, res, next) => {
     price,
     // img: req.file.path,
     link,
+    status: "Request",
     creator: req.userData.email,
     created_at: datePh,
   });
@@ -391,6 +392,7 @@ const updateReqSolarPanel = async (req, res, next) => {
     price,
     // img: req.file.path,
     link,
+    status: "Request",
     id_to_edit: solar_panelId,
     creator: req.userData.email,
     created_at: datePh,
