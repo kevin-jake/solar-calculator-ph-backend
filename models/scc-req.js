@@ -12,6 +12,7 @@ const sccSchema = new Schema({
   img: { type: String },
   link: { type: String, required: true },
   creator: { type: String, required: true },
+  status: { type: String, required: true },
   id_to_edit: { type: String },
   created_at: { type: String },
   updated_at: { type: String },

@@ -66,6 +66,12 @@ router.post(
   inverterControllers.updateReqInverter
 );
 
+router.patch(
+  "/request/:pid",
+  [check("status").not().isEmpty()],
+  inverterControllers.statusUpdateInverter
+);
+
 router.delete("/:pid", inverterControllers.deleteInverter);
 
 module.exports = router;

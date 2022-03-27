@@ -90,6 +90,13 @@ const createSCC = async (req, res, next) => {
     link,
   } = req.body;
 
+  let requestor;
+  if (req.body.creator) {
+    requestor = req.body.creator;
+  } else {
+    requestor = req.userData.email;
+  }
+
   const createdSCC = new SCC({
     sccname,
     type,
@@ -99,7 +106,8 @@ const createSCC = async (req, res, next) => {
     price,
     link,
     // img: req.file.path,
-    creator: req.userData.email,
+    creator: requestor,
+    approved_by: null || req.userData.email,
     created_at: datePh,
   });
 
@@ -118,9 +126,6 @@ const createSCC = async (req, res, next) => {
   //   const error = new HttpError("Could not find user for provided id.", 404);
   //   return next(error);
   // }
-
-  console.log(createdSCC);
-  console.log(req.userData);
 
   try {
     // const sess = await mongoose.startSession();
@@ -193,6 +198,7 @@ const updateSCC = async (req, res, next) => {
   // img,
   scc.link = link;
   scc.updated_at = datePh;
+  scc.approved_by = req.userData.email;
 
   try {
     await scc.save();
@@ -294,6 +300,7 @@ const createReqSCC = async (req, res, next) => {
     price,
     link,
     // img: req.file.path,
+    status: "Request",
     creator: req.userData.email,
     created_at: datePh,
   });
@@ -358,6 +365,7 @@ const updateReqSCC = async (req, res, next) => {
     link,
     id_to_edit: sccId,
     // img: req.file.path,
+    status: "Request",
     creator: req.userData.email,
     created_at: datePh,
   });
@@ -380,6 +388,69 @@ const updateReqSCC = async (req, res, next) => {
   res.status(201).json({ scc: updateSCCReq });
 };
 
+const statusUpdateSCC = async (req, res, next) => {
+  if (req.userData.role != "Admin") {
+    return next(
+      new HttpError("You are not allowed to do this operation.", 403)
+    );
+  }
+
+  const datePh = moment.tz(Date.now(), "Asia/Manila").format();
+  const {
+    sccname,
+    type,
+    brand,
+    supplier,
+    amprating,
+    price,
+    // img,
+    link,
+    status,
+  } = req.body;
+  const sccId = req.params.pid;
+
+  let scc;
+  try {
+    scc = await SCCReq.findById(sccId);
+  } catch (err) {
+    const error = new HttpError(
+      "Something went wrong, could not update SCC Request.",
+      500
+    );
+    return next(error);
+  }
+
+  // if (scc.creator.toString() !== req.userData.userId) {
+  //   const error = new HttpError(
+  //     "You are not allowed to edit this SCC.",
+  //     401
+  //   );
+  //   return next(error);
+  // }
+
+  scc.sccname = sccname;
+  scc.type = type;
+  scc.brand = brand;
+  scc.supplier = supplier;
+  scc.amprating = amprating;
+  scc.price = price;
+  // img,
+  scc.status = status;
+  scc.link = link;
+  scc.updated_at = datePh;
+  try {
+    await scc.save();
+  } catch (err) {
+    const error = new HttpError(
+      "Something went wrong, could not update SCC Request.",
+      500
+    );
+    return next(error);
+  }
+
+  res.status(200).json({ scc: scc.toObject({ getters: true }) });
+};
+
 exports.getSCC = getSCC;
 exports.getSCCReqs = getSCCReqs;
 exports.getSCCById = getSCCById;
@@ -388,3 +459,4 @@ exports.updateSCC = updateSCC;
 exports.deleteSCC = deleteSCC;
 exports.createReqSCC = createReqSCC;
 exports.updateReqSCC = updateReqSCC;
+exports.statusUpdateSCC = statusUpdateSCC;

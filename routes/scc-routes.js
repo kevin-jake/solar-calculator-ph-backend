@@ -43,8 +43,6 @@ router.patch(
   sccControllers.updateSCC
 );
 
-router.delete("/:pid", sccControllers.deleteSCC);
-
 router.post(
   "/request",
   // fileUpload.single("image"),
@@ -72,5 +70,13 @@ router.post(
   ],
   sccControllers.updateReqSCC
 );
+
+router.patch(
+  "/request/:pid",
+  [check("status").not().isEmpty()],
+  sccControllers.statusUpdateSCC
+);
+
+router.delete("/:pid", sccControllers.deleteSCC);
 
 module.exports = router;

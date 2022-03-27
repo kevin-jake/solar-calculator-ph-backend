@@ -94,6 +94,13 @@ const createBattery = async (req, res, next) => {
     link,
   } = req.body;
 
+  let requestor;
+  if (req.body.creator) {
+    requestor = req.body.creator;
+  } else {
+    requestor = req.userData.email;
+  }
+
   const createdBattery = new Battery({
     battname,
     batttype,
@@ -103,7 +110,8 @@ const createBattery = async (req, res, next) => {
     priceperpc,
     link,
     // img: req.file.path,
-    creator: req.userData.email,
+    creator: requestor,
+    approved_by: null || req.userData.email,
     created_at: datePh,
   });
 
@@ -197,6 +205,7 @@ const updateBattery = async (req, res, next) => {
   // img,
   battery.link = link;
   battery.updated_at = datePh;
+  battery.approved_by = req.userData.email;
 
   try {
     await battery.save();
@@ -298,6 +307,7 @@ const createReqBattery = async (req, res, next) => {
     priceperpc,
     link,
     // img: req.file.path,
+    status: "Request",
     creator: req.userData.email,
     created_at: datePh,
   });
@@ -358,6 +368,7 @@ const updateReqBattery = async (req, res, next) => {
     priceperpc,
     link,
     id_to_edit: battid,
+    status: "Request",
     // img: req.file.path,
     creator: req.userData.email,
     created_at: datePh,
@@ -378,11 +389,69 @@ const updateReqBattery = async (req, res, next) => {
   res.status(201).json({ battery: updateBattery });
 };
 
+const statusUpdateBattery = async (req, res, next) => {
+  if (req.userData.role != "Admin") {
+    return next(
+      new HttpError("You are not allowed to do this operation.", 403)
+    );
+  }
+
+  const datePh = moment.tz(Date.now(), "Asia/Manila").format();
+  const {
+    battname,
+    batttype,
+    battmodel,
+    voltage,
+    battcapacity,
+    priceperpc,
+    // img,
+    link,
+    status,
+  } = req.body;
+
+  const battid = req.params.pid;
+
+  let battery;
+  try {
+    battery = await BatteryReq.findById(battid);
+  } catch (err) {
+    const error = new HttpError(
+      "Something went wrong, could not update Battery Request.",
+      500
+    );
+    return next(error);
+  }
+
+  battery.battname = battname;
+  battery.batttype = batttype;
+  battery.battmodel = battmodel;
+  battery.voltage = voltage;
+  battery.battcapacity = battcapacity;
+  battery.priceperpc = priceperpc;
+  // img,
+  battery.status = status;
+  battery.link = link;
+  battery.updated_at = datePh;
+
+  try {
+    await battery.save();
+  } catch (err) {
+    const error = new HttpError(
+      "Something went wrong, could not update Battery Request.",
+      500
+    );
+    return next(error);
+  }
+
+  res.status(200).json({ battery: battery.toObject({ getters: true }) });
+};
+
 exports.getBattery = getBattery;
 exports.getBatteryById = getBatteryById;
 exports.getBatteryReqs = getBatteryReqs;
 exports.createBattery = createBattery;
-exports.createReqBattery = createReqBattery;
-exports.updateReqBattery = updateReqBattery;
 exports.updateBattery = updateBattery;
 exports.deleteBattery = deleteBattery;
+exports.createReqBattery = createReqBattery;
+exports.updateReqBattery = updateReqBattery;
+exports.statusUpdateBattery = statusUpdateBattery;
