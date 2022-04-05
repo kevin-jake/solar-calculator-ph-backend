@@ -104,8 +104,8 @@ const createSolarPanel = async (req, res, next) => {
   const createdSolarPanel = new SolarPanel({
     pvname,
     wattage,
-    brand,
-    supplier,
+    brand: brand || "",
+    supplier: supplier || "",
     voc,
     imp,
     vmp,
@@ -316,8 +316,8 @@ const createReqSolarPanel = async (req, res, next) => {
   const createdSolarPanelReq = new SolarPanelReq({
     pvname,
     wattage,
-    brand,
-    supplier,
+    brand: brand || "",
+    supplier: supplier || "",
     voc,
     imp,
     vmp,

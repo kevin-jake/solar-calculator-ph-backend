@@ -104,7 +104,7 @@ const createBattery = async (req, res, next) => {
   const createdBattery = new Battery({
     battname,
     batttype,
-    battmodel,
+    battmodel: battmodel || "",
     voltage,
     battcapacity,
     priceperpc,
@@ -301,7 +301,7 @@ const createReqBattery = async (req, res, next) => {
   const createdBattery = new BatteryReq({
     battname,
     batttype,
-    battmodel,
+    battmodel: battmodel || "",
     voltage,
     battcapacity,
     priceperpc,

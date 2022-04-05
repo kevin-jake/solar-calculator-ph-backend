@@ -101,7 +101,7 @@ const createInverter = async (req, res, next) => {
 
   const createdInverter = new Inverter({
     inverterName,
-    type,
+    type: type || "",
     inputVoltage,
     efficiency,
     wattage,
@@ -301,7 +301,7 @@ const createReqInverter = async (req, res, next) => {
 
   const createdInverter = new InverterReq({
     inverterName,
-    type,
+    type: type || "",
     inputVoltage,
     efficiency,
     wattage,

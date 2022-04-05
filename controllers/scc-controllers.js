@@ -100,8 +100,8 @@ const createSCC = async (req, res, next) => {
   const createdSCC = new SCC({
     sccname,
     type,
-    brand,
-    supplier,
+    brand: brand || "",
+    supplier: supplier || "",
     amprating,
     price,
     link,
@@ -294,8 +294,8 @@ const createReqSCC = async (req, res, next) => {
   const createdSCCReq = new SCCReq({
     sccname,
     type,
-    brand,
-    supplier,
+    brand: brand || "",
+    supplier: supplier || "",
     amprating,
     price,
     link,
