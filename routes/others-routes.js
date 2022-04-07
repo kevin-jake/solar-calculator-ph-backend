@@ -7,14 +7,14 @@ const checkAuth = require("../middleware/check-auth");
 
 const router = express.Router();
 
-router.get("/", sccControllers.getSCC);
+router.get("/", othersControllers.getSCC);
 
-// router.get("/user/:uid", sccControllers.getSCCByUserId);
+// router.get("/user/:uid", othersControllers.getSCCByUserId);
 
 router.use(checkAuth);
 
-router.get("/requests", sccControllers.getSCCReqs);
-router.get("/:pid", sccControllers.getSCCById);
+router.get("/requests", othersControllers.getSCCReqs);
+router.get("/:pid", othersControllers.getSCCById);
 
 router.post(
   "/",
@@ -27,7 +27,7 @@ router.post(
     check("amprating").not().isEmpty(),
     check("price").not().isEmpty(),
   ],
-  sccControllers.createSCC
+  othersControllers.createSCC
 );
 
 router.patch(
@@ -40,7 +40,7 @@ router.patch(
     check("amprating").not().isEmpty(),
     check("price").not().isEmpty(),
   ],
-  sccControllers.updateSCC
+  othersControllers.updateSCC
 );
 
 router.post(
@@ -54,7 +54,7 @@ router.post(
     check("amprating").not().isEmpty(),
     check("price").not().isEmpty(),
   ],
-  sccControllers.createReqSCC
+  othersControllers.createReqSCC
 );
 
 router.post(
@@ -68,15 +68,15 @@ router.post(
     check("amprating").not().isEmpty(),
     check("price").not().isEmpty(),
   ],
-  sccControllers.updateReqSCC
+  othersControllers.updateReqSCC
 );
 
 router.patch(
   "/request/:pid",
   [check("status").not().isEmpty()],
-  sccControllers.statusUpdateSCC
+  othersControllers.statusUpdateSCC
 );
 
-router.delete("/:pid", sccControllers.deleteSCC);
+router.delete("/:pid", othersControllers.deleteSCC);
 
 module.exports = router;
