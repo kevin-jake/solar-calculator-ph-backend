@@ -9,6 +9,7 @@ const inverterRoutes = require("./routes/inverter-routes");
 const batteryRoutes = require("./routes/battery-routes");
 const pvRoutes = require("./routes/solarpanel-routes");
 const sccRoutes = require("./routes/scc-routes");
+const othersRoutes = require("./routes/others-routes");
 const usersRoutes = require("./routes/users-routes");
 const HttpError = require("./models/http-error");
 
@@ -33,6 +34,7 @@ app.use("/api/inverter", inverterRoutes);
 app.use("/api/battery", batteryRoutes);
 app.use("/api/pv", pvRoutes);
 app.use("/api/scc", sccRoutes);
+app.use("/api/others", othersRoutes);
 
 app.use("/api/users", usersRoutes);
 
