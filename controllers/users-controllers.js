@@ -9,7 +9,8 @@ const moment = require("moment-timezone");
 const getUsers = async (req, res, next) => {
   let users;
   try {
-    users = await User.find({}, "-password");
+    users = await User.find({}, "-password").sort({ created_at: -1 });
+    console.log(users);
   } catch (err) {
     const error = new HttpError(
       "Fetching users failed, please try again later.",
@@ -29,7 +30,7 @@ const signup = async (req, res, next) => {
     );
   }
 
-  const { name, email, password, role } = req.body;
+  const { name, email, password, mobile_num, role } = req.body;
 
   let existingUser;
   try {
@@ -66,6 +67,7 @@ const signup = async (req, res, next) => {
     name,
     email,
     role,
+    mobile_num,
     // image: req.file.path,
     password: hashedPassword,
     created_at: datePh,
@@ -107,6 +109,7 @@ const signup = async (req, res, next) => {
     email: createdUser.email,
     role: createdUser.role,
     name: createdUser.name,
+    mobile_num: createdUser.mobile_num,
     token: token,
   });
 };
